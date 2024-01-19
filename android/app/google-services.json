@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "617861172627",
+    "project_id": "splitwise-cac10",
+    "storage_bucket": "splitwise-cac10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617861172627:android:b3b3ad995d3e5393c16c66",
+        "android_client_info": {
+          "package_name": "com.example.splitwise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWSmvnBpe3lkrLg3F7wmu1i9VQDWwy9dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617861172627:android:4a6b5947d82dba9fc16c66",
+        "android_client_info": {
+          "package_name": "com.itm.splitwise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWSmvnBpe3lkrLg3F7wmu1i9VQDWwy9dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
