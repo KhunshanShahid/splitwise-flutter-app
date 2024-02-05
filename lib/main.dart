@@ -1,46 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splitwise/AppConstants/constants.dart';
+import 'package:splitwise/CustomWidget/Policy.dart';
+import 'package:splitwise/Provider/LoginProvider.dart';
+import 'package:splitwise/Screen/Friends.dart';
 import 'package:splitwise/Screen/HomeScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:splitwise/Screen/Login.dart';
+import 'package:splitwise/Screen/NewExpense.dart';
+import 'package:splitwise/Screen/SignUp.dart';
+import 'package:splitwise/Screen/SplitExpense.dart';
+import 'package:splitwise/Themes/DarkTheme.dart';
+import 'package:splitwise/Themes/LightTheme.dart';
+import 'package:splitwise/config/routes/RouteGuard.dart';
+import 'package:splitwise/config/routes/Routes.dart';
 import 'firebase_options.dart';
+import 'package:provider/provider.dart';
 
-void main() async{
-    WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('login') ?? false;
+
+    if (isLoggedIn) {
+      LoginProvider().loginUser();
+      setState(() {});
+    } else {
+      LoginProvider().logoutUser();
+    }
+    
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => LoginProvider()),
+      ],
+      child: MaterialApp(
+        title: 'BillBuddy',
+        theme: darkTheme,
+        darkTheme: lightTheme,
+        initialRoute: AppRoutes.home,
+        onGenerateRoute: (settings) =>
+            RouteGuard.onGenerateRoute(context, settings),
+        routes: {
+          AppRoutes.home: (context) => const HomeScreen(),
+          AppRoutes.friends: (context) => const Friends(),
+          AppRoutes.signup: (context) => SignUpPage(),
+          AppRoutes.login: (context) => LoginPage(),
+          AppRoutes.terms: (context) => Policy(
+              heading: "Terms & Condition",
+              termstitle: AppConstant().termsTitle),
+          AppRoutes.privacy: (context) => Policy(
+              heading: "Privacy", termstitle: AppConstant().privacyTitle),
+          AppRoutes.equalExpense: (context) => const SplitExpense(),
+          AppRoutes.newExpense: (context) => NewExpense(),
+        },
       ),
-      home: const HomeScreen(),
     );
   }
 }
-
